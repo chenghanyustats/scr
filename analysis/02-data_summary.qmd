@@ -1,12 +1,13 @@
 ---
 title: "SCR Data Summary"
 format: 
-  html:
+  docx:
     number-sections: true
+    highlight-style: github
 ---
 
 ```{r}
-#| echo: true
+#| echo: false
 #| code-fold: true
 #| message: false
 library(purrr)
