@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>SCR Data Summary</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="02-data_summary_files/libs/clipboard/clipboard.min.js"></script>
+<script src="02-data_summary_files/libs/quarto-html/quarto.js"></script>
+<script src="02-data_summary_files/libs/quarto-html/popper.min.js"></script>
+<script src="02-data_summary_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="02-data_summary_files/libs/quarto-html/anchor.min.js"></script>
+<link href="02-data_summary_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="02-data_summary_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="02-data_summary_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="02-data_summary_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="02-data_summary_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">SCR Data Summary</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"clean"</span>, <span class="st">"data_xlsx.RData"</span>), <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Loading objects:
+  data_xlsx</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"clean"</span>, <span class="st">"data_1_no_repeat_all.RData"</span>), <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Loading objects:
+  data_no_repeat_all</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"clean"</span>, <span class="st">"data_2_combine_ext.RData"</span>), <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Loading objects:
+  data_combine_ext</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"clean"</span>, <span class="st">"data_3_no_missing.RData"</span>), <span class="at">verbose =</span> <span class="cn">TRUE</span>)   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Loading objects:
+  data_no_missing</code></pre>
+</div>
+</div>
+<section id="data-cleaning" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="data-cleaning"><span class="header-section-number">1</span> Data Cleaning</h2>
+<section id="raw-data-data_xlsx" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="raw-data-data_xlsx"><span class="header-section-number">1.1</span> Raw data <code>data_xlsx</code></h3>
+<p>The raw data <code>data_xlsx</code> loaded from <code>./data/raw/2024-07-16_FSARS_EDA_Long_V2_101-269.xlsx</code> contains 124 subjects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data_xlsx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20,574 × 11
+      id run      condition   trial cs_stim_time cs_scl cs_latency cs_amplitude
+   &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;       &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
+ 1   101 Learning fear            1         95.9   9.91       2.20        0.735
+ 2   101 Learning fear            2        259.    7.68       2.26        2.31 
+ 3   101 Learning fear            3         NA    NA         NA          NA    
+ 4   101 Learning fear            4         NA    NA         NA          NA    
+ 5   101 Learning fear            5         NA    NA         NA          NA    
+ 6   101 Learning fear            6         NA    NA         NA          NA    
+ 7   101 Learning fear            7         NA    NA         NA          NA    
+ 8   101 Learning fear            8         NA    NA         NA          NA    
+ 9   101 Learning fear_safety     1         NA    NA         NA          NA    
+10   101 Learning fear_safety     2         NA    NA         NA          NA    
+# ℹ 20,564 more rows
+# ℹ 3 more variables: cs_rise_time &lt;dbl&gt;, cs_size &lt;dbl&gt;, cs_onset &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(data_xlsx[[<span class="st">"id"</span>]]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 124</code></pre>
+</div>
+</div>
+</section>
+<section id="cleaned-data-data_no_repeat_all" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="cleaned-data-data_no_repeat_all"><span class="header-section-number">1.2</span> Cleaned data <code>data_no_repeat_all</code></h3>
+<p>I first clean the dataset. I found that some trial numbers are repeated twice. One has reaction and cs variable values, and the other has no or missing values. I keep the row whose trial has values. The data set that removes all repeated trials with no values is saved in <code>data_no_repeat_all</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data_no_repeat_all</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 19,840 × 11
+   id    run      condition   trial cs_stim_time cs_scl cs_latency cs_amplitude
+   &lt;chr&gt; &lt;chr&gt;    &lt;fct&gt;       &lt;int&gt;        &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
+ 1 101   Learning fear            1         95.9   9.91       2.20        0.735
+ 2 101   Learning fear            2        259.    7.68       2.26        2.31 
+ 3 101   Learning fear            3         NA    NA         NA          NA    
+ 4 101   Learning fear            4         NA    NA         NA          NA    
+ 5 101   Learning fear            5         NA    NA         NA          NA    
+ 6 101   Learning fear            6         NA    NA         NA          NA    
+ 7 101   Learning fear            7         NA    NA         NA          NA    
+ 8 101   Learning fear            8         NA    NA         NA          NA    
+ 9 101   Learning fear_safety     1         NA    NA         NA          NA    
+10 101   Learning fear_safety     2         NA    NA         NA          NA    
+# ℹ 19,830 more rows
+# ℹ 3 more variables: cs_rise_time &lt;dbl&gt;, cs_size &lt;dbl&gt;, cs_onset &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Note that each subject has 4 runs, 5 conditions, and 8 trials, so we have <span class="math inline">\(124\times 4 \times 5 \times 8 = 19840\)</span> rows.</p>
+<p>Also, we usually use <code>snake_case</code> to name variables, and set character values. So the variable <code>condition</code> has values “safety”, “reward_safety”, “fear_safety”, “reward”, “fear”. The variable <code>run</code> will later change its values to “learn”, “run1”, “run2”, and “run3”.</p>
+<p>The variable <code>condition</code> is of type <code>factor</code> having levels</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(data_no_repeat_all<span class="sc">$</span>condition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "factor"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(data_no_repeat_all<span class="sc">$</span>condition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "safety"        "reward_safety" "fear_safety"   "reward"       
+[5] "fear"         </code></pre>
+</div>
+</div>
+<p>Levels: safety reward_safety fear_safety reward fear</p>
+</section>
+<section id="cleaned-data-data_combine_ext" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="cleaned-data-data_combine_ext"><span class="header-section-number">1.3</span> Cleaned data <code>data_combine_ext</code></h3>
+<p>Based on <code>data_no_repeat_all</code>, with Jacklynn’s comments, for the <code>run</code> variable, I further merge <code>Extincti</code> and <code>Run3</code>, renaming all <code>Ectincti</code>s as <code>Run3</code>. The saved data set is <code>data_combine_ext</code>. Also note that the variable <code>run</code>’s value has been changed to learn, run1, run2, run3.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data_no_repeat_all<span class="sc">$</span>run)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Extincti Learning     Run1     Run2     Run3 
+    2720     4960     4960     4960     2240 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data_combine_ext<span class="sc">$</span>run)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+learn  run1  run2  run3 
+ 4960  4960  4960  4960 </code></pre>
+</div>
+</div>
+</section>
+<section id="cleaned-data-data_no_missing" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="cleaned-data-data_no_missing"><span class="header-section-number">1.4</span> Cleaned data <code>data_no_missing</code></h3>
+<p>The data further cleaned is <code>data_no_missing</code> that removes all rows with no reaction values or physiological response. There are 2229 trials among 224 subjects that have physiological responses.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>data_no_missing</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2,229 × 11
+   id    run   condition     trial cs_stim_time cs_scl cs_latency cs_amplitude
+   &lt;chr&gt; &lt;chr&gt; &lt;fct&gt;         &lt;int&gt;        &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
+ 1 101   learn fear              1         95.9   9.91       2.20        0.735
+ 2 101   learn fear              2        259.    7.68       2.26        2.31 
+ 3 101   learn fear_safety       6        484.    9.05       1.34        3.66 
+ 4 101   learn reward            1         82.8  10.7        2.19        0.371
+ 5 101   learn reward            4        365.    8.56       3.40        1.71 
+ 6 101   run1  fear              4        979.   10.7        2.35        1.15 
+ 7 101   run1  fear_safety       3       1030.   10.9        4.18        0.911
+ 8 101   run2  fear_safety       6       1762.   13.1        2.53        0.528
+ 9 101   run2  reward            5       1718.    9.58       1.48        3.61 
+10 101   run2  reward_safety     7       1875.   10.2        3.40        0.789
+# ℹ 2,219 more rows
+# ℹ 3 more variables: cs_rise_time &lt;dbl&gt;, cs_size &lt;dbl&gt;, cs_onset &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>In the experiment, ID 238 and 239 do not have any reaction values, or physiological response to any trials. Both participants are removed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setdiff</span>(<span class="fu">unique</span>(data_xlsx<span class="sc">$</span>id), <span class="fu">unique</span>(data_no_missing<span class="sc">$</span>id))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 238 239</code></pre>
+</div>
+</div>
+<p>Later we use <code>data_no_missing</code> for analysis. We can always go back to other data sets or the raw data when we need to. The code for cleaning data is saved in <code>01-data.R</code>.</p>
+</section>
+</section>
+<section id="data-summary" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="data-summary"><span class="header-section-number">2</span> Data Summary</h2>
+<section id="frequency" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="frequency"><span class="header-section-number">2.1</span> Frequency</h3>
+<p>The frequency table of <code>run</code> is</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data_no_missing</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>(freq_react_run <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> <span class="fu">select</span>(run) <span class="sc">|&gt;</span> <span class="fu">table</span>() )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>run
+learn  run1  run2  run3 
+  823   534   451   421 </code></pre>
+</div>
+</div>
+<p><strong>Findings</strong>: (Just observed results from data, not formal statistical inference)</p>
+<ul>
+<li><strong>Learning round has more reactions, and frequency of reaction decays with time passed.</strong></li>
+</ul>
+<p>We can check the contingency table of <code>run</code> and <code>condition</code>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>freq_react_run_cond <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> <span class="fu">group_by</span>(run) <span class="sc">|&gt;</span> <span class="fu">select</span>(run, condition) <span class="sc">|&gt;</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>()</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>freq_react_run_cond <span class="ot">&lt;-</span> <span class="fu">cbind</span>(freq_react_run_cond, freq_react_run)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>freq_react_run_cond <span class="ot">&lt;-</span> <span class="fu">rbind</span>(freq_react_run_cond, <span class="fu">apply</span>(freq_react_run_cond, <span class="dv">2</span>, sum))</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>freq_react_run_cond</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      safety reward_safety fear_safety reward fear freq_react_run
+learn    140           120         149    137  277            823
+run1      61            91          87    104  191            534
+run2      92            83          70     82  124            451
+run3      80            73          90     72  106            421
+         373           367         396    395  698           2229</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(freq_react_run_cond <span class="sc">/</span> <span class="fu">max</span>(freq_react_run_cond), <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      safety reward_safety fear_safety reward fear freq_react_run
+learn   0.06          0.05        0.07   0.06 0.12           0.37
+run1    0.03          0.04        0.04   0.05 0.09           0.24
+run2    0.04          0.04        0.03   0.04 0.06           0.20
+run3    0.04          0.03        0.04   0.03 0.05           0.19
+        0.17          0.16        0.18   0.18 0.31           1.00</code></pre>
+</div>
+</div>
+<p><strong>Findings</strong>: (Just observed results from data, not formal statistical inference)</p>
+<ul>
+<li><strong>Participants have more physiological responses to condition <code>fear</code>.</strong></li>
+<li><strong>For other conditions, their number of responses are not very different.</strong></li>
+<li><strong>The number of responses with <code>fear</code> and <code>reward</code> decreases faster. (Check their percentage).</strong></li>
+</ul>
+<p>I then check how <code>condition</code> and <code>trial</code> are associated with the response frequencies. Frequencies with and without Learning run are both considered.</p>
+<p><strong>Findings</strong>: (Just observed results from data, not formal statistical inference)</p>
+<ul>
+<li><strong>Participants tend to have reactions in the first trial, especially for “fear” condition.</strong></li>
+<li><strong>The number of physiological response is decreasing with trial orders when the learning run is included.</strong></li>
+<li><strong>The decreasing pattern is not obvious for other condition types when the learning run is not included.</strong></li>
+<li><strong>The number seems to increase back a little bit in 7th and 8th trial.</strong></li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>data_cond_trial <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> <span class="fu">group_by</span>(condition) <span class="sc">|&gt;</span> <span class="fu">select</span>(trial) <span class="sc">|&gt;</span> <span class="fu">table</span>()</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(<span class="fu">rownames</span>(data_cond_trial))) {</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">barplot</span>(data_cond_trial[i, ], </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">main =</span> <span class="fu">paste</span>(<span class="fu">rownames</span>(data_cond_trial)[i], <span class="st">"w/ learn"</span>), <span class="at">las =</span> <span class="dv">1</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">xlab =</span> <span class="st">"trial"</span>, <span class="at">ylab =</span> <span class="st">"number of reactions"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">120</span>))</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="do">## remove learn run</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>data_cond_trial_no_learn <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> <span class="fu">group_by</span>(condition) <span class="sc">|&gt;</span> </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(run <span class="sc">!=</span> <span class="st">"learn"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(trial) <span class="sc">|&gt;</span> </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>()</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(<span class="fu">rownames</span>(data_cond_trial_no_learn))) {</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">barplot</span>(data_cond_trial_no_learn[i, ], </span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">main =</span> <span class="fu">paste</span>(<span class="fu">rownames</span>(data_cond_trial)[i], <span class="st">"w/o learn"</span>), <span class="at">las =</span> <span class="dv">1</span>,</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">xlab =</span> <span class="st">"trial"</span>, <span class="at">ylab =</span> <span class="st">"number of reactions"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">85</span>))</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="summary-statistics-for-cs-related-variables" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="summary-statistics-for-cs-related-variables"><span class="header-section-number">2.2</span> Summary statistics for CS related variables</h3>
+<p>[Note:] <em>The learning run is removed from the analysis</em>.</p>
+<p>Here I summarize all the CS related variables except <code>cs_stim_time</code> that is irrelevant to our study. The summary statistics include the minimum value, 1st quartile (25% percentile), median (50% percentile), 3rd quartile (75% percentile), maximum value, and the standard deviation.</p>
+<p>Here the statistics are summarized by trial condition.</p>
+<p><strong>Findings</strong>: (Just observed results from data, not formal statistical inference)</p>
+<ul>
+<li><p>Hard to see and conclude any effect of condition on the cs related variables. We can discuss it later.</p></li>
+<li><p>One thing I’m confused is that some amplitudes are ZERO. I wonder if it is a typo.</p></li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>data_split_cond <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(run <span class="sc">!=</span> <span class="st">"learn"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">split</span>(.<span class="sc">$</span>condition)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>cs_sum_cond <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data_split_cond, <span class="cf">function</span>(x) <span class="fu">apply</span>(x[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)], <span class="dv">2</span>, summary))</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>cs_sd_cond <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data_split_cond, <span class="cf">function</span>(x) <span class="fu">apply</span>(x[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)], <span class="dv">2</span>, sd))</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>cs_summ_cond <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="dv">5</span>)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    cs_summ_cond[[i]] <span class="ot">&lt;-</span> <span class="fu">rbind</span>(cs_sum_cond[[i]], cs_sd_cond[[i]])</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rownames</span>(cs_summ_cond[[i]]) <span class="ot">&lt;-</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="st">"min"</span>, <span class="st">"1stQ"</span>, <span class="st">"med"</span>, <span class="st">"mean"</span>, <span class="st">"3rdQ"</span>, <span class="st">"max"</span>, <span class="st">"sd"</span>)</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cs_summ_cond) <span class="ot">&lt;-</span> <span class="fu">levels</span>(data<span class="sc">$</span>condition)</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(cs_summ_cond, <span class="cf">function</span>(x) <span class="fu">round</span>(x, <span class="at">digits =</span> <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$safety
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.211      1.023        0.000        0.012   0.470    0.117
+1stQ  5.258      1.782        0.319        1.287   5.537    5.165
+med   8.823      2.546        0.771        2.727  10.100    8.961
+mean  8.773      2.710        1.179        3.782   9.906    8.727
+3rdQ 12.459      3.586        1.465        4.843  13.434   12.299
+max  25.539      4.960       12.703       24.185  28.032   25.600
+sd    4.806      1.114        1.435        3.772   5.270    4.814
+
+$reward_safety
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.409      1.014        0.000        0.000   0.621    0.406
+1stQ  5.660      1.692        0.285        1.241   6.399    5.678
+med   9.183      2.348        0.691        2.455  10.127    8.926
+mean  9.119      2.510        1.093        3.863  10.172    9.079
+3rdQ 12.447      3.228        1.425        5.479  13.678   12.317
+max  25.275      4.891       10.481       21.797  26.624   25.067
+sd    4.907      0.986        1.402        3.583   5.237    4.867
+
+$fear_safety
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min  -0.105      1.017        0.002        0.050   0.652   -0.012
+1stQ  5.756      1.801        0.362        1.366   6.699    5.717
+med   9.525      2.493        0.674        2.227  10.718    9.520
+mean  9.409      2.624        1.061        3.250  10.446    9.384
+3rdQ 12.979      3.435        1.273        4.338  14.080   12.876
+max  24.583      4.945       12.119       20.726  28.145   25.478
+sd    4.721      1.048        1.285        2.938   5.086    4.676
+
+$reward
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.540      1.025        0.000        0.005   1.181    0.494
+1stQ  6.265      1.800        0.333        1.306   6.890    6.340
+med   9.136      2.525        0.671        2.383  10.211    9.114
+mean  9.337      2.601        1.043        3.383  10.353    9.310
+3rdQ 12.282      3.282        1.216        4.303  13.236   12.231
+max  24.588      4.947        9.590       23.538  29.082   24.272
+sd    4.359      0.976        1.265        3.253   4.769    4.354
+
+$fear
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.768      1.033        0.002        0.026   0.862    0.784
+1stQ  5.495      1.999        0.427        1.433   6.694    5.421
+med   9.329      2.420        0.822        3.135  10.414    9.279
+mean  9.176      2.576        1.217        3.414  10.362    9.145
+3rdQ 12.486      3.032        1.654        4.855  13.776   12.502
+max  24.986      4.975       11.244       17.596  26.611   24.844
+sd    4.704      0.900        1.308        2.373   5.108    4.701</code></pre>
+</div>
+</div>
+<p>Here shows the data that have amplitude value zero.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(data_split_cond, <span class="cf">function</span>(x) {</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(<span class="fu">which</span>(x<span class="sc">$</span>cs_amplitude <span class="sc">==</span> <span class="dv">0</span>)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        x[<span class="fu">which</span>(x<span class="sc">$</span>cs_amplitude <span class="sc">==</span> <span class="dv">0</span>), ]</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    }})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$safety
+# A tibble: 1 × 11
+  id    run   condition trial cs_stim_time cs_scl cs_latency cs_amplitude
+  &lt;chr&gt; &lt;chr&gt; &lt;fct&gt;     &lt;int&gt;        &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
+1 158   run1  safety        3         984.   12.5       1.43            0
+# ℹ 3 more variables: cs_rise_time &lt;dbl&gt;, cs_size &lt;dbl&gt;, cs_onset &lt;dbl&gt;
+
+$reward_safety
+# A tibble: 2 × 11
+  id    run   condition     trial cs_stim_time cs_scl cs_latency cs_amplitude
+  &lt;chr&gt; &lt;chr&gt; &lt;fct&gt;         &lt;int&gt;        &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
+1 103   run3  reward_safety     5        2405.  14.8        2.74            0
+2 250   run1  reward_safety     3         964.   8.62       1.80            0
+# ℹ 3 more variables: cs_rise_time &lt;dbl&gt;, cs_size &lt;dbl&gt;, cs_onset &lt;dbl&gt;
+
+$fear_safety
+NULL
+
+$reward
+# A tibble: 2 × 11
+  id    run   condition trial cs_stim_time cs_scl cs_latency cs_amplitude
+  &lt;chr&gt; &lt;chr&gt; &lt;fct&gt;     &lt;int&gt;        &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
+1 200   run2  reward        3        1892.   11.9       1.72            0
+2 256   run3  reward        1        2377.   15.8       2.06            0
+# ℹ 3 more variables: cs_rise_time &lt;dbl&gt;, cs_size &lt;dbl&gt;, cs_onset &lt;dbl&gt;
+
+$fear
+NULL</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>cs_var_name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Base Level"</span>,</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"Latency"</span>,</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"Amplitude"</span>,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"Rise Time"</span>,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"Reaction Size"</span>,</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"Onset"</span>)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="fu">seq_along</span>(<span class="fu">names</span>(data_split_cond[[<span class="dv">1</span>]][<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)]))) {</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="cf">function</span>(x) <span class="fu">hist</span>(data_split_cond[[x]][[k<span class="sc">+</span><span class="dv">5</span>]],</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">main =</span> <span class="fu">names</span>(data_split_cond)[x],</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">xlab =</span> cs_var_name[k], <span class="at">las =</span> <span class="dv">1</span>, </span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">font.lab =</span> <span class="dv">2</span>, <span class="at">breaks =</span> <span class="dv">15</span>))</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-15-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-15-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-15-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-15-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The summary grouped by cs variables is shown below.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>cs_summ_cond_var <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="fu">length</span>(<span class="fu">names</span>(data_split_cond[[<span class="dv">1</span>]][<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)])))</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="fu">seq_along</span>(<span class="fu">names</span>(data_split_cond[[<span class="dv">1</span>]][<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)]))) {</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    cs_summ_cond_var[[k]] <span class="ot">&lt;-</span> <span class="fu">sapply</span>(cs_summ_cond, <span class="cf">function</span>(x) x[, k])</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cs_summ_cond_var) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(data_no_missing)[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)]</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(cs_summ_cond_var, <span class="cf">function</span>(x) <span class="fu">round</span>(x, <span class="at">digits =</span> <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$cs_scl
+     safety reward_safety fear_safety reward   fear
+min   0.211         0.409      -0.105  0.540  0.768
+1stQ  5.258         5.660       5.756  6.265  5.495
+med   8.823         9.183       9.525  9.136  9.329
+mean  8.773         9.119       9.409  9.337  9.176
+3rdQ 12.459        12.447      12.979 12.282 12.486
+max  25.539        25.275      24.583 24.588 24.986
+sd    4.806         4.907       4.721  4.359  4.704
+
+$cs_latency
+     safety reward_safety fear_safety reward  fear
+min   1.023         1.014       1.017  1.025 1.033
+1stQ  1.782         1.692       1.801  1.800 1.999
+med   2.546         2.348       2.493  2.525 2.420
+mean  2.710         2.510       2.624  2.601 2.576
+3rdQ  3.586         3.228       3.435  3.282 3.032
+max   4.960         4.891       4.945  4.947 4.975
+sd    1.114         0.986       1.048  0.976 0.900
+
+$cs_amplitude
+     safety reward_safety fear_safety reward   fear
+min   0.000         0.000       0.002  0.000  0.002
+1stQ  0.319         0.285       0.362  0.333  0.427
+med   0.771         0.691       0.674  0.671  0.822
+mean  1.179         1.093       1.061  1.043  1.217
+3rdQ  1.465         1.425       1.273  1.216  1.654
+max  12.703        10.481      12.119  9.590 11.244
+sd    1.435         1.402       1.285  1.265  1.308
+
+$cs_rise_time
+     safety reward_safety fear_safety reward   fear
+min   0.012         0.000       0.050  0.005  0.026
+1stQ  1.287         1.241       1.366  1.306  1.433
+med   2.727         2.455       2.227  2.383  3.135
+mean  3.782         3.863       3.250  3.383  3.414
+3rdQ  4.843         5.479       4.338  4.303  4.855
+max  24.185        21.797      20.726 23.538 17.596
+sd    3.772         3.583       2.938  3.253  2.373
+
+$cs_size
+     safety reward_safety fear_safety reward   fear
+min   0.470         0.621       0.652  1.181  0.862
+1stQ  5.537         6.399       6.699  6.890  6.694
+med  10.100        10.127      10.718 10.211 10.414
+mean  9.906        10.172      10.446 10.353 10.362
+3rdQ 13.434        13.678      14.080 13.236 13.776
+max  28.032        26.624      28.145 29.082 26.611
+sd    5.270         5.237       5.086  4.769  5.108
+
+$cs_onset
+     safety reward_safety fear_safety reward   fear
+min   0.117         0.406      -0.012  0.494  0.784
+1stQ  5.165         5.678       5.717  6.340  5.421
+med   8.961         8.926       9.520  9.114  9.279
+mean  8.727         9.079       9.384  9.310  9.145
+3rdQ 12.299        12.317      12.876 12.231 12.502
+max  25.600        25.067      25.478 24.272 24.844
+sd    4.814         4.867       4.676  4.354  4.701</code></pre>
+</div>
+</div>
+</section>
+<section id="summary-statistics-for-cs-related-variables-with-trials" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="summary-statistics-for-cs-related-variables-with-trials"><span class="header-section-number">2.3</span> Summary statistics for CS related variables with trials</h3>
+<p>In this section, I examine the summary statistics for CS related variables a bit further by including trial orders to see if there is any trial effect. Again, this is a descriptive analysis that help us somewhat know the data. A formal statistical inference is needed if we would like to make any inference conclusions.</p>
+<p>The followings show the histograms of cs related variables by trial condition and trial order. At the bottom we have numerical summaries. Maybe there is some interesting pattern or result out there, but I can’t find them at this moment. We can check more later.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>cond_levels <span class="ot">&lt;-</span> <span class="fu">levels</span>(data<span class="sc">$</span>condition)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>cs_cond_trial_lst <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="fu">length</span>(cond_levels))</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_along</span>(cond_levels)) {</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    data_cond <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(condition <span class="sc">==</span> cond_levels[j]) <span class="sc">|&gt;</span> </span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(run <span class="sc">!=</span> <span class="st">"learn"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(id, run, condition, cs_stim_time))</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>    data_cond_trial <span class="ot">&lt;-</span> data_cond <span class="sc">%&gt;%</span> <span class="fu">split</span>(.<span class="sc">$</span>trial)</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>    data_cond_trial <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data_cond_trial, <span class="cf">function</span>(x) <span class="fu">select</span>(x, <span class="sc">-</span>trial))</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>    cs_sum_trial <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data_cond_trial, <span class="cf">function</span>(x) <span class="fu">apply</span>(x, <span class="dv">2</span>, summary))</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>    cs_sd_trial <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data_cond_trial, <span class="cf">function</span>(x) <span class="fu">apply</span>(x, <span class="dv">2</span>, sd))</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>    cs_summ_trial <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="dv">8</span>)</span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>) {</span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>        cs_summ_trial[[i]] <span class="ot">&lt;-</span> <span class="fu">rbind</span>(cs_sum_trial[[i]], cs_sd_trial[[i]])</span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rownames</span>(cs_summ_trial[[i]]) <span class="ot">&lt;-</span></span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a>            <span class="fu">c</span>(<span class="st">"min"</span>, <span class="st">"1stQ"</span>, <span class="st">"med"</span>, <span class="st">"mean"</span>, <span class="st">"3rdQ"</span>, <span class="st">"max"</span>, <span class="st">"sd"</span>)</span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(cs_summ_trial) <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"trial"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(data_cond_trial) <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"trial"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a>    cs_cond_trial_lst[[j]] <span class="ot">&lt;-</span> cs_summ_trial</span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (k <span class="cf">in</span> <span class="fu">seq_along</span>(<span class="fu">names</span>(data_cond_trial[[<span class="dv">1</span>]]))) {</span>
+<span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a>        <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>, <span class="cf">function</span>(x) <span class="fu">hist</span>(data_cond_trial[[x]][[k]],</span>
+<span id="cb42-31"><a href="#cb42-31" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">main =</span> <span class="fu">paste</span>(<span class="fu">names</span>(data_cond_trial)[x], </span>
+<span id="cb42-32"><a href="#cb42-32" aria-hidden="true" tabindex="-1"></a>                                                  cond_levels[j]),</span>
+<span id="cb42-33"><a href="#cb42-33" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">xlab =</span> cs_var_name[k], <span class="at">las =</span> <span class="dv">1</span>,</span>
+<span id="cb42-34"><a href="#cb42-34" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">font.lab =</span> <span class="dv">2</span>))</span>
+<span id="cb42-35"><a href="#cb42-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb42-36"><a href="#cb42-36" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-12.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-14.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-15.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-16.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-17.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-18.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-19.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-20.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-21.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-22.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-23.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-24.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-25.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-26.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-27.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-28.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-29.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-data_summary_files/figure-html/unnamed-chunk-17-30.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cs_cond_trial_lst) <span class="ot">&lt;-</span> cond_levels</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(cs_cond_trial_lst, <span class="cf">function</span>(x) <span class="fu">lapply</span>(x, <span class="cf">function</span>(y) <span class="fu">round</span>(y, <span class="at">digits =</span> <span class="dv">3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$safety
+$safety$trial_1
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.158      1.157        0.002        0.072   3.191    2.859
+1stQ  7.063      1.840        0.407        1.250   7.742    7.043
+med   9.604      2.448        0.813        1.757  10.136    9.560
+mean  9.527      2.813        0.877        2.854  10.431    9.553
+3rdQ 12.938      4.050        1.199        4.805  14.471   12.782
+max  17.511      4.957        3.455        7.626  18.669   17.204
+sd    3.980      1.193        0.682        2.235   4.173    3.879
+
+$safety$trial_2
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.427      1.035        0.002        0.012   1.328    0.401
+1stQ  3.958      1.277        0.169        0.756   4.169    3.960
+med   7.758      1.841        1.031        1.557   8.516    7.678
+mean  7.505      2.049        0.947        3.028   8.416    7.469
+3rdQ 11.833      2.451        1.147        3.817  12.445   11.752
+max  15.195      4.779        3.172       19.633  16.243   15.199
+sd    4.576      1.001        0.884        4.299   4.769    4.533
+
+$safety$trial_3
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.745      1.023        0.000        0.026   0.873    0.768
+1stQ  5.751      1.719        0.226        1.196   6.408    5.774
+med   7.726      2.571        0.497        2.187   9.077    7.660
+mean  8.979      2.738        0.863        2.970   9.845    8.983
+3rdQ 11.834      3.532        1.056        3.922  12.677   11.803
+max  25.539      4.870        4.323       13.783  28.032   25.600
+sd    5.593      1.167        1.023        2.955   6.042    5.621
+
+$safety$trial_4
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.880      1.225        0.087        0.405   1.031    0.919
+1stQ  6.305      2.013        0.275        1.223   6.641    6.283
+med   8.962      2.517        0.548        2.307  10.155    8.900
+mean  8.736      2.714        1.059        3.455   9.753    8.695
+3rdQ 11.590      3.360        1.440        5.285  13.031   11.367
+max  16.191      4.960        7.718       13.846  17.323   16.190
+sd    3.822      0.919        1.433        2.946   4.388    3.807
+
+$safety$trial_5
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.890      1.034        0.015        0.198   0.470    0.417
+1stQ  5.815      1.558        0.272        1.560   5.527    5.229
+med   9.082      2.764        1.019        3.066  10.590    9.050
+mean  8.618      2.758        1.296        4.782   9.679    8.383
+3rdQ 10.609      3.651        2.013        5.594  12.769   10.608
+max  17.587      4.472        4.469       18.879  21.115   17.419
+sd    3.847      1.112        1.199        4.550   4.887    4.062
+
+$safety$trial_6
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.476      1.260        0.198        0.145   1.251    0.497
+1stQ  4.398      1.779        0.519        2.270   4.977    4.354
+med   9.363      2.558        1.086        3.955  10.527    9.341
+mean  8.956      2.702        1.470        4.517  10.432    8.961
+3rdQ 13.487      3.423        1.350        4.918  15.256   13.538
+max  19.128      4.957        5.618       16.857  21.606   19.069
+sd    5.727      1.173        1.510        4.012   6.227    5.734
+
+$safety$trial_7
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.211      1.099        0.079        0.561   1.367    0.117
+1stQ  3.820      2.136        0.381        1.616   6.549    3.804
+med   7.053      2.796        0.652        3.130   8.224    7.163
+mean  7.940      2.956        1.574        4.229   9.506    7.932
+3rdQ 12.168      4.149        1.453        4.849  12.875   12.029
+max  19.394      4.871       12.703       18.358  20.738   19.482
+sd    4.825      1.195        2.500        4.167   4.812    4.814
+
+$safety$trial_8
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.161      1.059        0.008        0.828   1.433    1.088
+1stQ  3.609      1.892        0.415        1.694   4.460    3.674
+med  10.751      2.662        0.786        2.963  12.334   10.602
+mean  9.408      2.712        1.351        4.463  10.676    9.325
+3rdQ 14.214      3.586        1.921        4.570  16.069   14.151
+max  18.898      4.891        5.466       24.185  21.275   19.380
+sd    5.999      1.038        1.339        4.550   6.820    5.995
+
+
+$reward_safety
+$reward_safety$trial_1
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.392      1.014        0.003        0.866   1.508    1.427
+1stQ  5.621      1.628        0.194        1.182   5.774    5.625
+med   8.348      2.177        0.455        1.754   9.578    8.273
+mean  8.841      2.295        0.711        2.918   9.499    8.788
+3rdQ 10.706      2.897        0.874        3.387  11.069   10.526
+max  25.275      4.262        4.753       11.387  25.966   25.067
+sd    4.918      0.838        0.906        2.777   5.245    4.864
+
+$reward_safety$trial_2
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.205      1.264        0.015        0.689   1.607    1.427
+1stQ  3.180      1.761        0.257        1.127   4.065    3.217
+med   9.100      2.180        0.534        2.062   8.401    7.102
+mean  8.090      2.547        0.873        3.141   8.647    7.774
+3rdQ 12.405      3.337        0.941        5.054  12.786   11.906
+max  15.614      4.778        4.147       10.726  18.628   15.953
+sd    5.140      1.085        1.025        2.598   5.265    5.038
+
+$reward_safety$trial_3
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.271      1.134        0.000        0.000   1.591    1.427
+1stQ  5.800      1.604        0.314        0.951   6.216    5.820
+med   8.600      1.831        0.587        1.640   9.346    8.525
+mean  8.721      2.153        0.904        2.609   9.641    8.737
+3rdQ 11.605      2.407        1.233        3.573  13.077   11.654
+max  23.962      4.891        4.147       12.286  26.512   23.857
+sd    5.019      0.932        0.970        2.726   5.347    4.990
+
+$reward_safety$trial_4
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.283      1.040        0.002        0.257   1.767    1.321
+1stQ  6.500      1.625        0.510        1.151   7.457    6.813
+med  10.205      2.490        0.864        2.585  12.524   10.075
+mean 10.063      2.520        1.194        3.965  11.341   10.147
+3rdQ 13.780      3.319        1.677        6.518  14.621   13.759
+max  19.701      4.608        6.145       14.193  20.830   19.667
+sd    4.927      1.033        1.178        3.636   5.207    4.818
+
+$reward_safety$trial_5
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.778      1.160        0.000        0.059   4.230    0.639
+1stQ  5.656      1.428        0.346        1.231   7.149    5.769
+med   9.727      2.248        0.658        3.596  10.736    9.741
+mean 10.174      2.302        1.358        3.699  11.530   10.172
+3rdQ 12.459      2.742        1.682        5.880  14.087   12.442
+max  24.220      4.366       10.481       11.598  26.624   24.170
+sd    5.822      0.908        2.220        3.059   5.780    5.830
+
+$reward_safety$trial_6
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.990      1.062        0.069        0.516   1.091    1.016
+1stQ  7.703      2.034        0.440        1.376   8.136    7.661
+med   9.195      2.689        0.870        3.351  11.113    9.122
+mean  9.786      2.704        1.206        4.577  10.980    9.774
+3rdQ 12.803      3.376        1.659        6.197  14.374   12.793
+max  19.313      4.811        4.457       18.418  19.771   19.362
+sd    4.479      0.964        1.117        4.200   4.779    4.490
+
+$reward_safety$trial_7
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.025      1.074        0.002        0.027   1.033    1.031
+1stQ  5.316      1.772        0.266        1.959   7.267    5.213
+med   8.579      2.723        0.720        3.711   9.194    8.497
+mean  8.748      2.778        1.006        5.171   9.672    8.666
+3rdQ 12.102      3.616        1.440        6.631  12.972   12.014
+max  17.462      4.817        4.382       21.797  19.562   17.334
+sd    4.384      1.074        0.989        4.713   4.610    4.281
+
+$reward_safety$trial_8
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.409      1.097        0.027        0.785   0.621    0.406
+1stQ  4.200      1.978        0.254        1.819   5.381    4.152
+med   8.614      2.607        0.792        3.049  10.266    8.624
+mean  8.262      2.648        1.593        4.227   9.824    8.231
+3rdQ 12.365      3.231        1.558        6.007  13.620   12.374
+max  17.387      4.495       10.017       10.093  24.960   17.375
+sd    5.191      0.921        2.523        2.999   6.058    5.153
+
+
+$fear_safety
+$fear_safety$trial_1
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.308      1.339        0.002        0.050   1.410    1.308
+1stQ  5.939      1.733        0.331        1.256   6.621    5.916
+med   8.456      2.738        0.536        1.820   9.665    8.374
+mean  8.953      2.820        0.761        3.105   9.661    8.900
+3rdQ 12.715      3.818        1.073        4.511  13.171   12.686
+max  17.783      4.686        3.476       12.197  19.611   17.728
+sd    4.506      1.095        0.681        2.921   4.799    4.487
+
+$fear_safety$trial_2
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.258      1.017        0.070        0.067   2.005    0.323
+1stQ  5.386      1.898        0.282        1.366   5.648    5.387
+med   8.026      2.478        0.628        2.000   9.464    8.017
+mean  8.829      2.601        1.040        2.882   9.841    8.801
+3rdQ 12.408      3.259        1.265        4.181  13.055   12.140
+max  23.685      4.468        5.597        7.724  26.414   23.711
+sd    4.772      0.929        1.146        2.236   5.138    4.754
+
+$fear_safety$trial_3
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min  -0.105      1.079        0.076        0.145   1.938   -0.012
+1stQ  6.101      1.605        0.431        1.491   6.693    6.101
+med   8.934      2.591        0.755        2.485  10.699    8.949
+mean  9.463      2.658        1.104        3.031  10.548    9.444
+3rdQ 12.943      3.357        1.367        4.090  13.329   12.747
+max  19.476      4.945        6.558        8.291  23.705   18.282
+sd    4.996      1.163        1.215        2.048   5.154    4.854
+
+$fear_safety$trial_4
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   3.078      1.024        0.226        0.832   4.193    3.258
+1stQ  9.121      1.489        0.704        1.362   9.992    9.048
+med  12.129      2.297        1.021        2.257  13.510   12.098
+mean 11.807      2.424        1.271        3.668  13.117   11.846
+3rdQ 14.302      3.228        1.559        3.928  15.591   14.257
+max  24.583      4.299        3.473       14.531  28.145   25.478
+sd    4.516      0.989        0.902        3.762   4.820    4.607
+
+$fear_safety$trial_5
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.891      1.053        0.064        0.882   2.068    1.906
+1stQ  5.762      1.819        0.300        1.866   6.231    5.800
+med   7.235      2.062        0.588        3.286   8.337    7.281
+mean  8.615      2.544        0.986        4.025   9.562    8.576
+3rdQ 12.732      3.190        1.058        4.765  13.320   12.698
+max  17.964      4.895        5.431       13.408  23.375   17.944
+sd    4.501      1.223        1.231        3.054   5.164    4.416
+
+$fear_safety$trial_6
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.874      1.062        0.029        0.621   1.241    1.083
+1stQ  5.190      1.780        0.300        1.515   5.514    5.209
+med   7.761      2.355        0.595        2.677   8.334    7.805
+mean  8.647      2.450        0.812        4.027   9.462    8.650
+3rdQ 13.025      3.037        0.989        5.001  13.713   12.852
+max  17.725      4.249        3.134       14.534  19.611   17.499
+sd    4.872      0.915        0.805        3.669   5.327    4.833
+
+$fear_safety$trial_7
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.477      1.044        0.015        0.398   1.521    1.506
+1stQ  8.237      1.828        0.370        1.265   9.373    8.193
+med  10.544      2.272        0.727        2.231  11.755   10.538
+mean 10.089      2.540        1.315        3.270  11.377   10.062
+3rdQ 13.437      3.149        1.694        4.092  15.070   13.267
+max  17.870      4.741        6.145       20.726  20.117   17.709
+sd    4.240      1.085        1.553        3.508   4.915    4.183
+
+$fear_safety$trial_8
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.470      1.082        0.029        0.137   0.652    0.623
+1stQ  4.721      1.904        0.367        1.383   5.792    4.812
+med   7.841      2.885        0.626        1.940   9.047    7.832
+mean  8.691      2.828        1.189        2.495   9.823    8.635
+3rdQ 13.393      3.647        1.099        3.197  14.400   13.297
+max  17.952      4.843       12.119        7.800  17.496   16.977
+sd    5.084      0.997        2.107        1.782   5.056    4.953
+
+
+$reward
+$reward$trial_1
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   2.171      1.025        0.000        0.006   2.763    2.283
+1stQ  5.623      1.459        0.172        1.141   6.303    5.630
+med   7.710      2.311        0.467        2.162   8.339    7.761
+mean  8.623      2.337        0.612        2.834   9.220    8.608
+3rdQ 11.407      3.050        0.676        4.404  11.989   11.394
+max  19.418      4.727        3.763        8.809  19.548   19.412
+sd    4.293      1.018        0.707        2.213   4.215    4.257
+
+$reward$trial_2
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.914      1.032        0.061        0.274   2.017    1.207
+1stQ  7.441      1.534        0.332        1.922   7.739    7.429
+med   8.931      2.259        0.638        2.831   9.837    8.931
+mean  9.195      2.275        0.765        4.099   9.951    9.185
+3rdQ 11.044      2.709        0.923        4.477  11.626   11.040
+max  17.929      4.048        2.827       13.257  19.720   17.834
+sd    3.615      0.824        0.639        3.385   3.924    3.601
+
+$reward$trial_3
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.430      1.034        0.000        0.005   1.639    1.436
+1stQ  7.509      1.770        0.203        0.934   8.363    7.448
+med   9.882      2.848        0.781        2.360  11.229   10.036
+mean  9.938      2.622        1.094        4.145  10.986    9.893
+3rdQ 12.691      3.394        1.448        5.166  13.496   12.601
+max  18.661      3.990        3.699       18.106  19.145   18.568
+sd    4.157      0.950        1.092        4.753   4.330    4.098
+
+$reward$trial_4
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   2.147      1.177        0.076        0.707   2.786    1.892
+1stQ  6.214      1.655        0.503        1.655   6.864    6.301
+med   9.561      2.193        0.699        2.875  10.400    9.553
+mean  8.903      2.485        1.398        3.027  10.261    8.863
+3rdQ 11.452      3.414        1.202        3.611  12.267   11.539
+max  14.920      4.720        9.590        8.214  24.084   14.514
+sd    3.750      1.051        2.088        1.793   4.739    3.723
+
+$reward$trial_5
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.540      1.157        0.017        0.097   3.023    0.494
+1stQ  5.650      1.851        0.513        1.458   6.764    5.101
+med   9.401      2.235        0.877        2.613  10.188    9.378
+mean  8.838      2.767        1.356        3.678  10.047    8.691
+3rdQ 11.538      3.703        1.922        4.421  13.274   11.720
+max  15.605      4.947        4.872       12.650  17.470   15.407
+sd    3.859      1.109        1.250        3.022   3.921    4.051
+
+$reward$trial_6
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.147      1.241        0.002        0.173   1.181    1.160
+1stQ  5.873      2.125        0.346        1.581   6.705    5.904
+med   9.973      2.708        0.751        2.386  10.980    9.915
+mean  9.005      2.832        1.080        3.535  10.053    8.972
+3rdQ 12.078      3.375        1.204        3.710  12.852   12.034
+max  14.807      4.789        4.655       23.538  19.157   14.798
+sd    3.880      0.945        1.161        3.995   4.477    3.862
+
+$reward$trial_7
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.587      1.090        0.020        0.395   1.666    1.646
+1stQ  6.946      2.103        0.444        1.095   7.681    6.906
+med   9.107      2.856        0.689        2.112  10.409    9.128
+mean  9.542      2.750        1.022        2.358  10.563    9.541
+3rdQ 12.924      3.096        1.181        3.304  13.593   12.907
+max  18.996      4.921        4.829        5.938  20.639   19.034
+sd    4.489      0.999        1.066        1.517   4.991    4.528
+
+$reward$trial_8
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.239      1.315        0.003        0.185   1.279    1.276
+1stQ  6.322      2.259        0.314        0.985   6.950    6.500
+med   8.446      2.615        0.607        1.992  10.947    8.476
+mean 10.586      2.736        1.233        3.059  11.883   10.651
+3rdQ 14.849      3.001        1.418        3.897  16.164   14.891
+max  24.588      4.494        9.200       11.713  29.082   24.272
+sd    6.126      0.861        1.813        2.903   6.887    6.044
+
+
+$fear
+$fear$trial_1
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.853      1.384        0.005        0.147   1.357    0.784
+1stQ  5.374      2.080        0.385        1.234   6.104    5.371
+med   7.967      2.494        0.711        2.182   8.902    7.887
+mean  8.726      2.713        0.997        2.931   9.680    8.683
+3rdQ 12.439      3.195        1.558        4.246  12.978   12.360
+max  19.714      4.928        3.818        7.489  20.625   19.145
+sd    4.378      0.882        0.819        2.042   4.729    4.341
+
+$fear$trial_2
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.768      1.088        0.037        0.673   0.862    0.810
+1stQ  6.305      1.913        0.398        1.447   7.133    6.282
+med   9.822      2.274        0.832        3.107  11.263    9.747
+mean  9.869      2.489        1.324        3.269  11.158    9.834
+3rdQ 12.412      2.909        1.275        4.367  14.393   12.440
+max  24.986      4.794       11.244       13.212  25.101   24.844
+sd    5.034      0.876        1.788        2.317   5.462    5.053
+
+$fear$trial_3
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.978      1.201        0.031        0.759   1.033    1.003
+1stQ  6.482      2.040        0.512        1.885   7.249    6.504
+med   8.880      2.549        0.887        3.332  10.072    8.894
+mean  9.225      2.645        1.205        3.517  10.397    9.192
+3rdQ 12.374      3.066        1.451        4.832  13.511   12.373
+max  24.646      4.975        8.963       11.002  26.611   24.562
+sd    4.718      0.872        1.542        2.065   5.011    4.697
+
+$fear$trial_4
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.928      1.046        0.006        0.137   1.204    1.047
+1stQ  5.281      1.825        0.380        1.409   5.598    5.197
+med   9.329      2.232        0.818        2.378  10.428    9.280
+mean  8.957      2.516        1.094        3.520  10.072    8.978
+3rdQ 12.402      3.014        1.488        5.642  13.197   12.463
+max  20.042      4.841        5.116       17.596  22.247   20.955
+sd    4.896      0.918        0.998        2.914   5.428    4.950
+
+$fear$trial_5
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.634      1.059        0.002        0.026   1.729    1.646
+1stQ  5.247      2.242        0.443        1.656   6.430    4.774
+med   9.460      2.515        0.890        3.301  10.829    9.381
+mean  9.326      2.711        1.303        3.754  10.484    9.181
+3rdQ 12.196      3.470        1.957        5.331  13.525   12.151
+max  17.879      4.541        6.236       13.622  19.513   17.963
+sd    4.573      0.880        1.295        2.807   4.782    4.542
+
+$fear$trial_6
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   0.853      1.033        0.014        0.071   1.299    0.916
+1stQ  5.156      1.934        0.430        1.607   6.029    5.185
+med   7.825      2.364        0.716        3.697   8.687    7.823
+mean  8.482      2.435        1.226        3.622   9.690    8.464
+3rdQ 11.827      2.980        1.439        5.088  12.680   11.732
+max  18.799      4.909        7.115        8.349  21.332   18.710
+sd    5.049      0.898        1.328        2.088   5.396    5.035
+
+$fear$trial_7
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.274      1.057        0.006        0.683   1.389    1.289
+1stQ  5.050      1.934        0.372        1.355   6.344    5.020
+med   9.817      2.420        0.875        3.292  10.284    9.787
+mean  8.804      2.585        1.168        3.396   9.922    8.754
+3rdQ 12.739      3.117        1.596        4.576  13.692   12.624
+max  17.303      4.847        5.029       12.108  21.947   17.148
+sd    4.780      0.979        1.166        2.319   5.147    4.739
+
+$fear$trial_8
+     cs_scl cs_latency cs_amplitude cs_rise_time cs_size cs_onset
+min   1.221      1.138        0.040        0.407   1.288    1.248
+1stQ  6.986      1.951        0.573        1.509   8.344    6.937
+med  10.656      2.197        1.344        3.376  12.022   10.487
+mean 10.289      2.446        1.608        3.740  11.941   10.333
+3rdQ 13.517      2.839        2.072        5.152  15.301   13.860
+max  21.843      4.903        8.051       10.328  23.436   21.454
+sd    4.330      0.932        1.475        2.583   4.894    4.370</code></pre>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
